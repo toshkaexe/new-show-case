@@ -1,10 +1,12 @@
 package com.example.newshowcase.controller;
 
+import com.example.newshowcase.dto.ConfirmationCodeRequest;
 import com.example.newshowcase.dto.EmailRequest;
 import com.example.newshowcase.dto.LoginRequest;
 import com.example.newshowcase.dto.RegistrationRequest;
 import com.example.newshowcase.service.AuthService;
 import com.example.newshowcase.service.EmailService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -37,10 +39,23 @@ public class AuthController {
         authService.registration(registrationDto.getLogin(), registrationDto.getEmail(), registrationDto.getPassword());
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/me")
     public Map<String, String> getMe(Authentication authentication) {
         String userId = (String) authentication.getPrincipal();
         return authService.getMe(userId);
+    }
+
+    @PostMapping("/registration-confirmation")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void registrationConfirmation(@Valid @RequestBody ConfirmationCodeRequest codeDto) {
+        authService.confirmRegistration(codeDto.getCode());
+    }
+
+    @PostMapping("/password-recovery")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void passwordRecovery(@Valid @RequestBody EmailRequest emailDto) {
+        emailService.sendPasswordRecoveryEmail(emailDto.getEmail());
     }
 
     @PostMapping("/registration-email-resending")

@@ -6,6 +6,7 @@ import com.example.newshowcase.dto.PaginationParams;
 import com.example.newshowcase.dto.UserOutputModel;
 import com.example.newshowcase.repository.UsersQueryRepository;
 import com.example.newshowcase.service.UsersService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Tag(name = "Users")
+@SecurityRequirement(name = "basicAuth")
 @RestController
 @RequestMapping("/users")
 public class UsersController {

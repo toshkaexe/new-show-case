@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -16,6 +17,11 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
     private static final int MAX_REQUESTS = 5;
     private static final long WINDOW_MS = 10_000;
+    private static final Set<String> RATE_LIMITED_PATHS = Set.of(
+            "/auth/registration-email-resending",
+            "/auth/registration-confirmation",
+            "/auth/password-recovery"
+    );
 
     private final ConcurrentHashMap<String, ConcurrentLinkedDeque<Long>> requestLog = new ConcurrentHashMap<>();
 
@@ -43,8 +49,8 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return !"/auth/registration-email-resending".equals(request.getRequestURI())
-                || !"POST".equalsIgnoreCase(request.getMethod());
+        return !"POST".equalsIgnoreCase(request.getMethod())
+                || !RATE_LIMITED_PATHS.contains(request.getRequestURI());
     }
 
     private String getClientIp(HttpServletRequest request) {
