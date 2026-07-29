@@ -1,5 +1,7 @@
 package com.example.newshowcase.exception;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -15,6 +17,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, List<Map<String, String>>>> handleValidationErrors(
             MethodArgumentNotValidException ex) {
@@ -28,6 +32,8 @@ public class GlobalExceptionHandler {
             errorsMessages.add(errorMap);
         }
 
+        log.warn("Validation failed: {}", errorsMessages);
+
         Map<String, List<Map<String, String>>> response = new HashMap<>();
         response.put("errorsMessages", errorsMessages);
 
@@ -36,6 +42,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Map<String, List<Map<String, String>>>> handleBadRequest(BadRequestException ex) {
+        log.warn("Bad request: {}", ex.getMessage());
         Map<String, List<Map<String, String>>> response = new HashMap<>();
         response.put("errorsMessages", ex.getErrors());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);

@@ -10,6 +10,8 @@ import com.example.newshowcase.model.NewestLike;
 import com.example.newshowcase.model.Post;
 import com.example.newshowcase.repository.BlogsRepository;
 import com.example.newshowcase.repository.PostsRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,6 +22,8 @@ import java.util.Optional;
 
 @Service
 public class PostsService {
+
+    private static final Logger log = LoggerFactory.getLogger(PostsService.class);
 
     private final PostsRepository postsRepository;
     private final BlogsRepository blogsRepository;
@@ -47,6 +51,7 @@ public class PostsService {
                 List.of(new NewestLike(publishedAt, "string", "string"))));
 
         Post saved = postsRepository.save(post);
+        log.info("Post created: id={}, title='{}', blogId={}", saved.getId(), saved.getTitle(), saved.getBlogId());
         return PostOutputModel.from(saved);
     }
 
@@ -68,6 +73,7 @@ public class PostsService {
                 List.of(new NewestLike(publishedAt, "string", "string"))));
 
         Post saved = postsRepository.save(post);
+        log.info("Post created for blog: id={}, title='{}', blogId={}", saved.getId(), saved.getTitle(), blogId);
         return PostOutputModel.from(saved);
     }
 
@@ -81,6 +87,7 @@ public class PostsService {
             return false;
         }
         postsRepository.deleteById(id);
+        log.info("Post deleted: id={}", id);
         return true;
     }
 
@@ -100,10 +107,12 @@ public class PostsService {
         post.setContent(updateModel.getContent());
         post.setBlogId(updateModel.getBlogId());
         postsRepository.save(post);
+        log.info("Post updated: id={}", id);
         return true;
     }
 
     public void deleteAll() {
         postsRepository.deleteAll();
+        log.warn("All posts deleted");
     }
 }

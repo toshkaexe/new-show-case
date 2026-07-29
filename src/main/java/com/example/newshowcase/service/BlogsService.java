@@ -4,6 +4,8 @@ import com.example.newshowcase.dto.BlogOutputModel;
 import com.example.newshowcase.dto.CreateBlogRequest;
 import com.example.newshowcase.model.Blog;
 import com.example.newshowcase.repository.BlogsRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,6 +14,8 @@ import java.util.Optional;
 
 @Service
 public class BlogsService {
+
+    private static final Logger log = LoggerFactory.getLogger(BlogsService.class);
 
     private final BlogsRepository blogsRepository;
 
@@ -22,6 +26,7 @@ public class BlogsService {
     public BlogOutputModel create(CreateBlogRequest createModel) {
         Blog blog = new Blog(createModel.getName(), createModel.getDescription(), createModel.getWebsiteUrl());
         Blog saved = blogsRepository.save(blog);
+        log.info("Blog created: id={}, name='{}'", saved.getId(), saved.getName());
         return BlogOutputModel.from(saved);
     }
 
@@ -39,6 +44,7 @@ public class BlogsService {
         blog.setDescription(updateModel.getDescription());
         blog.setWebsiteUrl(updateModel.getWebsiteUrl());
         blogsRepository.save(blog);
+        log.info("Blog updated: id={}", id);
         return true;
     }
 
@@ -47,10 +53,12 @@ public class BlogsService {
             return false;
         }
         blogsRepository.deleteById(id);
+        log.info("Blog deleted: id={}", id);
         return true;
     }
 
     public void deleteAll() {
         blogsRepository.deleteAll();
+        log.warn("All blogs deleted");
     }
 }
