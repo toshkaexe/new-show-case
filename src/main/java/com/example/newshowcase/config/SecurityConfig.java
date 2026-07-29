@@ -1,6 +1,6 @@
 package com.example.newshowcase.config;
 
-import com.example.newshowcase.features.auth.guard.JwtAuthFilter;
+import com.example.newshowcase.filter.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

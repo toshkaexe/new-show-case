@@ -1,6 +1,6 @@
 package com.example.newshowcase.config;
 
-import com.example.newshowcase.common.interceptor.LoggingInterceptor;
+import com.example.newshowcase.interceptor.LoggingInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
