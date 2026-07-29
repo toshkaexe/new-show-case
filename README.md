@@ -2,7 +2,6 @@
 
 REST API for a blogging platform. The project demonstrates building a production-ready backend with Java 21 + Spring Boot 3.3, featuring full authentication flow, email confirmation, and pagination.
 
-
 **Swagger UI:** http://localhost:3000/swagger-doc
 
 ## About the Project
@@ -15,6 +14,7 @@ This is an API for a platform where users can manage blogs and publish posts. Ma
 4. **Blog Management** — create, edit, delete blogs
 5. **Post Publishing** — posts are linked to blogs, support likes
 6. **Administration** — user management via Basic Auth
+7. **Testing** — delete all data endpoint for E2E testing
 
 ## Tech Stack
 
@@ -34,20 +34,20 @@ Uses **Package-by-Layer** — classic separation by technical layers:
 src/main/java/com/example/newshowcase/
 │
 ├── config/             Configuration
-│   ├── SecurityConfig      — Spring Security (JWT + Basic Auth)
+│   ├── SecurityConfig      — Spring Security (JWT, CSRF disabled for REST)
 │   ├── WebConfig           — interceptors
 │   ├── JwtProperties       — token settings from application.yml
-│   └── OpenApiConfig       — Swagger UI with authorization
+│   └── OpenApiConfig       — Swagger UI with authorization schemes
 │
 ├── controller/         REST Controllers
 │   ├── AuthController      — registration, login, confirmation, recovery
 │   ├── BlogsController     — blog CRUD + blog posts
 │   ├── PostsController     — post CRUD
 │   ├── UsersController     — user management (Basic Auth)
-│   └── WelcomePageController
+│   └── DeletingController  — delete all data (E2E testing)
 │
 ├── dto/                Request/Response Models
-│   ├── *Request            — input validation (Jakarta Validation)
+│   ├── *Request            — input validation (Jakarta Validation + regex)
 │   └── *OutputModel        — API responses
 │
 ├── exception/          Error Handling
@@ -107,13 +107,14 @@ cd new-show-case
 PORT=3000
 MONGO_URI_CLOUD=mongodb://localhost:27017
 DB_NAME=nest_base
-ACCESS_JWT_SECRET=your-secret-key-minimum-32-characters
-REFRESH_JWT_SECRET=your-secret-key-minimum-32-characters
+ACCESS_JWT_SECRET=your-secret-key-minimum-32-characters!!
+REFRESH_JWT_SECRET=your-secret-key-minimum-32-characters!!
 MAIL_USERNAME=your-email@mail.ru
 MAIL_PASSWORD=your-app-password
 ```
 
-> JWT secrets must be at least 32 characters (HS256 requirement).  
+> **Important:** JWT secrets must be at least 32 characters (256 bits) — this is a requirement of the HS256 algorithm. Shorter keys will cause a `WeakKeyException` at runtime.
+
 > For Mail.ru use an app password, not the mailbox password.
 
 ### 3. Start MongoDB
@@ -142,25 +143,25 @@ Use the **Authorize** button to enter a JWT token or Basic credentials for testi
 
 ## API Endpoints
 
-### Auth
-| Method | URL | Description |
-|--------|-----|-------------|
-| POST | `/auth/registration` | Register + send confirmation email |
-| POST | `/auth/registration-confirmation` | Confirm email with code |
-| POST | `/auth/registration-email-resending` | Resend confirmation code |
-| POST | `/auth/login` | Login, returns JWT |
-| GET | `/auth/me` | Current user info (JWT) |
-| POST | `/auth/password-recovery` | Send recovery code to email |
+### Auth (`/auth`)
+| Method | URL | Description | Auth |
+|--------|-----|-------------|------|
+| POST | `/auth/registration` | Register + send confirmation email | — |
+| POST | `/auth/registration-confirmation` | Confirm email with code | — |
+| POST | `/auth/registration-email-resending` | Resend confirmation code | — |
+| POST | `/auth/login` | Login, returns JWT | — |
+| GET | `/auth/me` | Current user info | Bearer JWT |
+| POST | `/auth/password-recovery` | Send recovery code to email | — |
 
-### Users (Basic Auth)
-| Method | URL | Description |
-|--------|-----|-------------|
-| GET | `/users` | List users (pagination, search) |
-| POST | `/users` | Create user |
-| GET | `/users/{id}` | Get by ID |
-| DELETE | `/users/{id}` | Delete |
+### Users (`/users`)
+| Method | URL | Description | Auth |
+|--------|-----|-------------|------|
+| GET | `/users` | List users (pagination, search) | Basic |
+| POST | `/users` | Create user | Basic |
+| GET | `/users/{id}` | Get by ID | Basic |
+| DELETE | `/users/{id}` | Delete | Basic |
 
-### Blogs
+### Blogs (`/blogs`)
 | Method | URL | Description |
 |--------|-----|-------------|
 | GET | `/blogs` | List blogs (pagination, name search) |
@@ -171,7 +172,7 @@ Use the **Authorize** button to enter a JWT token or Basic credentials for testi
 | GET | `/blogs/{id}/posts` | Blog posts |
 | POST | `/blogs/{id}/posts` | Create post in blog |
 
-### Posts
+### Posts (`/posts`)
 | Method | URL | Description |
 |--------|-----|-------------|
 | GET | `/posts` | List posts (pagination) |
@@ -179,6 +180,11 @@ Use the **Authorize** button to enter a JWT token or Basic credentials for testi
 | GET | `/posts/{id}` | Get by ID |
 | PUT | `/posts/{id}` | Update |
 | DELETE | `/posts/{id}` | Delete |
+
+### Testing
+| Method | URL | Description |
+|--------|-----|-------------|
+| DELETE | `/all-data` | Delete all data (for E2E testing) |
 
 ## In Progress
 
