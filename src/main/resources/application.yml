@@ -1,0 +1,19 @@
+spring:
+  data:
+    mongodb:
+      uri: ${MONGO_URI_CLOUD:mongodb://localhost:27017}
+      database: ${DB_NAME:nest_base}
+
+server:
+  port: ${PORT:3000}
+
+app:
+  jwt:
+    access-secret: ${ACCESS_JWT_SECRET:defaultAccessSecret}
+    refresh-secret: ${REFRESH_JWT_SECRET:defaultRefreshSecret}
+    access-expiration: 600000
+    refresh-expiration: 36000000
+
+springdoc:
+  swagger-ui:
+    path: /swagger-doc
