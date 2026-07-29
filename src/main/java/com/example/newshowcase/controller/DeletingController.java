@@ -7,16 +7,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Testing")
+@Tag(name = "Removing")
 @RestController
-@RequestMapping("/testing/all-data")
-public class TestingController {
+@RequestMapping("/all-data")
+public class DeletingController {
 
     private final UsersService usersService;
     private final BlogsService blogsService;
     private final PostsService postsService;
 
-    public TestingController(UsersService usersService, BlogsService blogsService, PostsService postsService) {
+    public DeletingController(UsersService usersService, BlogsService blogsService, PostsService postsService) {
         this.usersService = usersService;
         this.blogsService = blogsService;
         this.postsService = postsService;
