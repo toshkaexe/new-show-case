@@ -46,6 +46,6 @@ public class AuthController {
     @PostMapping("/registration-email-resending")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void registrationEmailResending(@Valid @RequestBody EmailRequest emailDto) {
-        emailService.send(emailDto.getEmail());
+        emailService.resendConfirmationEmail(emailDto.getEmail());
     }
 }
