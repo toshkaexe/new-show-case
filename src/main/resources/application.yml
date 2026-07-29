@@ -9,8 +9,8 @@ server:
 
 app:
   jwt:
-    access-secret: ${ACCESS_JWT_SECRET:defaultAccessSecret}
-    refresh-secret: ${REFRESH_JWT_SECRET:defaultRefreshSecret}
+    access-secret: ${ACCESS_JWT_SECRET:defaultAccessSecretKeyThatIsLongEnough}
+    refresh-secret: ${REFRESH_JWT_SECRET:defaultRefreshSecretKeyThatIsLongEnough}
     access-expiration: 600000
     refresh-expiration: 36000000
 

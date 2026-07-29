@@ -47,4 +47,11 @@ public class GlobalExceptionHandler {
         response.put("errorsMessages", ex.getErrors());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, String>> handleUnexpected(Exception ex) {
+        log.error("Unexpected error: ", ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("error", ex.getClass().getSimpleName(), "message", ex.getMessage() != null ? ex.getMessage() : "Unknown error"));
+    }
 }
