@@ -180,3 +180,7 @@ Use the **Authorize** button to enter a JWT token or Basic credentials for testi
 | GET | `/posts/{id}` | Get by ID |
 | PUT | `/posts/{id}` | Update |
 | DELETE | `/posts/{id}` | Delete |
+
+## In Progress
+
+- **Post Likes** — like/dislike system for posts (per-user status tracking, newest likes list, like counters). The data model (`ExtendedLikesInfo`, `NewestLike`) is already in place, endpoint `PUT /posts/{id}/like-status` is under development.
