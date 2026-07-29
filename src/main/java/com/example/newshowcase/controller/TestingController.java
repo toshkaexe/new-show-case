@@ -1,4 +1,4 @@
-package com.example.newshowcase.features.testing;
+package com.example.newshowcase.controller;
 
 import com.example.newshowcase.service.BlogsService;
 import com.example.newshowcase.service.PostsService;
