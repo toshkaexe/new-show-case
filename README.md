@@ -2,7 +2,6 @@
 
 REST API for a blogging platform. The project demonstrates building a production-ready backend with Java 21 + Spring Boot 3.3, featuring full authentication flow, email confirmation, and pagination.
 
-Originally written in NestJS/TypeScript, then rewritten in Java to demonstrate proficiency with the Spring ecosystem.
 
 **Swagger UI:** http://localhost:3000/swagger-doc
 
